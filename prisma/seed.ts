@@ -1,19 +1,20 @@
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient, Prisma } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
 async function main() {
-  const data = {
-    id: 0,
+  const company = await prisma.company.create({ data: { id: "a" } });
+  const user = await prisma.user.create({ data: { id: "b" } });
+  const userSettings: Prisma.UserSettingsUncheckedCreateInput = {
+    userId: user.id,
+    companyId: company.id,
+    startDate: new Date(2023, 0, 1, 12),
   };
 
-  await prisma.user.upsert({
-    create: data,
-    update: data,
-    where: {
-      id: data.id,
-    },
+  const data = await prisma.userSettings.create({
+    data: userSettings,
   });
+  console.log(data);
 }
 
 main()

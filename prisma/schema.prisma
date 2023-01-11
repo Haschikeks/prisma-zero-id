@@ -11,5 +11,22 @@ datasource db {
 }
 
 model User {
-  id Int @id @default(autoincrement())
+  id           String         @id @default(uuid())
+  UserSettings UserSettings[]
+}
+
+model Company {
+  id           String         @id @default(uuid())
+  UserSettings UserSettings[]
+}
+
+model UserSettings {
+  userId    String
+  startDate DateTime @db.Date()
+  companyId String
+
+  User    User    @relation(fields: [userId], references: [id])
+  Company Company @relation(fields: [companyId], references: [id])
+
+  @@unique([userId, startDate])
 }
